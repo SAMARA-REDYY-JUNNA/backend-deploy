@@ -223,7 +223,7 @@ resource "null_resource" "backend" {
   }
 }
 
-resource "aws_ami_instance_state" "backend" {
+resource "aws_ec2_instance_state" "backend" {
   instance_id = aws_instance.backend.id
   state       = "stopped"
   depends_on = [null_resource.backend]
