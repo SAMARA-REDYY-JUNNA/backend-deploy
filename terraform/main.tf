@@ -276,7 +276,7 @@ resource "aws_alb_target_group" "backend" {
 
 resource "aws_launch_template" "backend" {
   name = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
-  image_id = aws_ami_from_instance.backend.id
+  image_id = aws_ec2_from_instance.backend.id
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t3.micro"
   update_default_version = true
