@@ -232,7 +232,7 @@ resource "aws_ec2_instance_state" "backend" {
 resource "aws_ami_from_instance" "backend" {
   name               = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   source_instance_id = aws_instance.backend.id
-  depends_on = [aws_ami_instance_state.backend]
+  depends_on = [aws_ec2_instance_state.backend]
 }
 
 resource "null_resource" "backend_delete" {
