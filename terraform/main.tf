@@ -252,7 +252,7 @@ resource "null_resource" "backend_delete" {
     command = "aws ec2 terminate-instances --instance-ids ${aws_instance.backend.id}"
   }
 
-  depends_on = [aws_ami_from_instance.backend]
+  depends_on = [aws_ec2_from_instance.backend]
 }
 
 resource "aws_alb_target_group" "backend" {
