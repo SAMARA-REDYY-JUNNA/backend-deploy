@@ -230,7 +230,7 @@ resource "aws_ec2_instance_state" "backend" {
 }
 
 resource "aws_ami_from_instance" "backend" {
-  name               = local.resource_name
+  name               = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   source_instance_id = aws_instance.backend.id
   depends_on = [aws_ec2_instance_state.backend]
 }
@@ -256,7 +256,7 @@ resource "null_resource" "backend_delete" {
 }
 
 resource "aws_alb_target_group" "backend" {
-  name     = local.resource_name
+  name     = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -275,7 +275,7 @@ resource "aws_alb_target_group" "backend" {
 }
 
 resource "aws_launch_template" "backend" {
-  name = local.resource_name
+  name = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   image_id = aws_ami_from_instance.backend.id
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t3.micro"
@@ -287,13 +287,13 @@ resource "aws_launch_template" "backend" {
     resource_type = "instance"
 
     tags = {
-      Name = local.resource_name
+      Name = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
     }
   }
 }
 
 resource "aws_autoscaling_group" "backend" {
-  name                      = local.resource_name
+  name                      = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   max_size                  = 10
   min_size                  = 1
   health_check_grace_period = 180 # 3 minutes for instance to intialise
@@ -315,7 +315,7 @@ resource "aws_autoscaling_group" "backend" {
 
   tag {
     key                 = "Name"
-    value               = local.resource_name
+    value               = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
     propagate_at_launch = true
   }
 
@@ -337,7 +337,7 @@ resource "aws_autoscaling_group" "backend" {
 }
 
 resource "aws_autoscaling_policy" "backend" {
-  name                   = "${local.resource_name}-backend"
+  name                   = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.backend.name
   target_tracking_configuration {
