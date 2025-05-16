@@ -223,16 +223,16 @@ resource "null_resource" "backend" {
   }
 }
 
-resource "aws_ec2_instance_state" "backend" {
+resource "aws_ami_instance_state" "backend" {
   instance_id = aws_instance.backend.id
   state       = "stopped"
   depends_on = [null_resource.backend]
 }
 
-resource "aws_ec2_from_instance" "backend" {
+resource "aws_ami_from_instance" "backend" {
   name               = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
   source_instance_id = aws_instance.backend.id
-  depends_on = [aws_ec2_instance_state.backend]
+  depends_on = [aws_ami_instance_state.backend]
 }
 
 resource "null_resource" "backend_delete" {
@@ -252,7 +252,7 @@ resource "null_resource" "backend_delete" {
     command = "aws ec2 terminate-instances --instance-ids ${aws_instance.backend.id}"
   }
 
-  depends_on = [aws_ec2_from_instance.backend]
+  depends_on = [aws_ami_from_instance.backend]
 }
 
 resource "aws_alb_target_group" "backend" {
@@ -276,7 +276,7 @@ resource "aws_alb_target_group" "backend" {
 
 resource "aws_launch_template" "backend" {
   name = "${var.project_name}-${var.environment}-${var.common_tags.Component}"
-  image_id = aws_ec2_from_instance.backend.id
+  image_id = aws_ami_from_instance.backend.id
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t3.micro"
   update_default_version = true
