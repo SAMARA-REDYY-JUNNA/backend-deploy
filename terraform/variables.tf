@@ -25,6 +25,6 @@ variable "domain_name" {
   
 }
 
-variable "app_Version" {
+variable "app_version" {
   
 }
